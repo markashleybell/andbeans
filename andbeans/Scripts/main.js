@@ -3,23 +3,22 @@
     var _fetch,
         _init;
 
-    _fetch = function (url, data, callback) {
-        $.ajax({
+    _fetch = function (url, data) {
+        return $.ajax({
             url: url,
             data: data,
             dataType: 'json',
             type: 'GET'
-        }).done(callback).fail(function (request, status, error) {
-            console.log(status + ': ' + error);
         });
     };
 
     _init = function () {
-        //https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27baked%2Bbeans%27
-        _fetch('https://api.datamarket.azure.com/Bing/Search/v1/Image', {
-            Query: 'baked+beans'
-        }, function (data) {
-            console.log(data);
+        $.when(
+            _fetch('/Main/GetImagesTest', { Query: 'fish' }),
+            _fetch('/Main/GetBeansTest', { Query: 'baked+beans' })
+        ).done(function (data1, data2) {
+            console.log(data1[0]);
+            console.log(data2[0]);
         });
     };
 

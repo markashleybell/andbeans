@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using RestSharp;
 using RestSharp.Authenticators;
 using andbeans.Models.Bing;
+using System.Threading;
 
 namespace andbeans.Controllers
 {
@@ -36,6 +37,17 @@ namespace andbeans.Controllers
             var response = client.Execute<BingSearchResultContainer>(req);
 
             return Json(response.Data.D, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetImagesTest(string query)
+        {
+            return Json(new { Query = query }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetBeansTest(string query)
+        {
+            Thread.Sleep(2000);
+            return Json(new { Query = query }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Contact()
