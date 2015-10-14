@@ -9,12 +9,13 @@ using RestSharp.Authenticators;
 using andbeans.Models.Bing;
 using System.Threading;
 using andbeans.Models;
+using Newtonsoft.Json;
 
 namespace andbeans.Controllers
 {
     public class MainController : Controller
     {
-        private string _bingApiKey;
+        string _bingApiKey;
         DataCache _cache;
         string _cacheKeyPrefix;
 
@@ -29,7 +30,7 @@ namespace andbeans.Controllers
             return View();
         }
 
-        public ActionResult GetImages(string query)
+        private IRestResponse<BingSearchResultContainer> FetchData(string query)
         {
             var client = new RestClient("https://api.datamarket.azure.com");
             client.Authenticator = new HttpBasicAuthenticator("", _bingApiKey);
@@ -38,20 +39,23 @@ namespace andbeans.Controllers
             req.AddParameter("ImageFilters", "'Size:Large'");
             req.AddParameter("Query", "'" + query.Trim() + "'");
 
-            var response = client.Execute<BingSearchResultContainer>(req);
-
-            return Json(response.Data.D, JsonRequestBehavior.AllowGet);
+            return client.Execute<BingSearchResultContainer>(req);
         }
 
-        public ActionResult GetImagesTest(string query)
+        public ActionResult GetImages(string query)
         {
-            return Json(new { Query = query }, JsonRequestBehavior.AllowGet);
+            //var response = FetchData(query);
+            //return Json(response.Data.D, JsonRequestBehavior.AllowGet);
+
+            return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/fish.json")), "application/json");
         }
 
-        public ActionResult GetBeansTest(string query)
+        public ActionResult GetBeans()
         {
-            Thread.Sleep(2000);
-            return Json(new { Query = query }, JsonRequestBehavior.AllowGet);
+            //var response = FetchData("baked beans");
+            //return Json(response.Data.D, JsonRequestBehavior.AllowGet);
+
+            return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/beans.json")), "application/json");
         }
 
         public ActionResult ClearCacheContents()
