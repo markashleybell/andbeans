@@ -8,16 +8,20 @@ using RestSharp;
 using RestSharp.Authenticators;
 using andbeans.Models.Bing;
 using System.Threading;
+using andbeans.Models;
 
 namespace andbeans.Controllers
 {
     public class MainController : Controller
     {
         private string _bingApiKey;
+        DataCache _cache;
+        string _cacheKeyPrefix;
 
         public MainController()
         {
             _bingApiKey = ConfigurationManager.AppSettings["BingApiKey"];
+            _cacheKeyPrefix = "andbeans-";
         }
 
         public ActionResult Index()
@@ -50,11 +54,17 @@ namespace andbeans.Controllers
             return Json(new { Query = query }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Contact()
+        public ActionResult ClearCacheContents()
         {
-            ViewBag.Message = "Your contact page.";
+            _cache.Clear();
+            return Content("CLEARED ALL CACHE");            
+        }
 
-            return View();
+        public ActionResult ShowCacheContents()
+        {
+            // We filter on Site Key because newer versions of MVC seem to stuff a load of other data into the memory cache 
+            // which we're not interested in (break on the line below and inspect _cache.BaseCache to see what I mean...)
+            return View(_cache.BaseCache.Where(x => x.Key.StartsWith(_cacheKeyPrefix, StringComparison.Ordinal)).OrderByDescending(x => x.Hits).ToList());
         }
     }
 }

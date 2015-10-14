@@ -1,0 +1,33 @@
+﻿@model List<CacheItemInfo>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Show Cache Contents</title>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>Key</th>
+                <th style="width: 90px;">Value</th>
+                <th style="width: 30px;">Hit</th>
+                <th style="width: 30px;">Miss</th>
+            </tr>
+
+            @foreach (var entry in Model)
+            {
+                <tr>
+                    <td>@entry.Key</td>
+                    <td>@((entry.Type.Length > 80) ? entry.Type.Substring(0, 77) + "..." : entry.Type)</td>
+                    <td>@entry.Hits</td>
+                    <td>@entry.Misses</td>
+                </tr>
+
+            }
+        </table>
+    </body>
+</html>
