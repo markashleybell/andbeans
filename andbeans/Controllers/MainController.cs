@@ -22,6 +22,7 @@ namespace andbeans.Controllers
         public MainController()
         {
             _bingApiKey = ConfigurationManager.AppSettings["BingApiKey"];
+            _cache = new DataCache();
             _cacheKeyPrefix = "andbeans-";
         }
 
@@ -30,32 +31,47 @@ namespace andbeans.Controllers
             return View();
         }
 
-        private IRestResponse<BingSearchResultContainer> FetchData(string query)
+        private BingSearchResultContainer FetchData(string query, CacheExpiry expiry)
         {
-            var client = new RestClient("https://api.datamarket.azure.com");
-            client.Authenticator = new HttpBasicAuthenticator("", _bingApiKey);
+            var key = _cacheKeyPrefix + "-image-query-" + query;
+            var data = _cache.Get<BingSearchResultContainer>(key);
 
-            var req = new RestRequest("Bing/Search/v1/Image");
-            req.AddParameter("ImageFilters", "'Size:Large+Aspect:Tall'");
-            req.AddParameter("Query", "'" + query.Trim() + "'");
+            // If the query's not in the cache
+            if (data == null)
+            {
+                // Request the data
+                var client = new RestClient("https://api.datamarket.azure.com");
+                client.Authenticator = new HttpBasicAuthenticator("", _bingApiKey);
 
-            return client.Execute<BingSearchResultContainer>(req);
+                var req = new RestRequest("Bing/Search/v1/Image");
+                req.AddParameter("ImageFilters", "'Size:Large+Aspect:Tall'");
+                req.AddParameter("Query", "'" + query.Trim() + "'");
+
+                var response = client.Execute<BingSearchResultContainer>(req);
+                
+                data = response.Data;
+
+                // And add it to the cache
+                _cache.Add(key, data, (int)expiry);
+            }
+
+            return data;
         }
 
         public ActionResult GetImages(string query)
         {
-            //var response = FetchData(query);
-            //return Json(response.Data.D, JsonRequestBehavior.AllowGet);
+            var data = FetchData(query, CacheExpiry.ThirtySeconds);
+            return Json(data.D, JsonRequestBehavior.AllowGet);
 
-            return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/fish.json")), "application/json");
+            // return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/fish.json")), "application/json");
         }
 
         public ActionResult GetBeans()
         {
-            //var response = FetchData("baked beans");
-            //return Json(response.Data.D, JsonRequestBehavior.AllowGet);
+            var data = FetchData("baked beans", CacheExpiry.OneMinute);
+            return Json(data.D, JsonRequestBehavior.AllowGet);
 
-            return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/beans.json")), "application/json");
+            // return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/beans.json")), "application/json");
         }
 
         public ActionResult ClearCacheContents()
