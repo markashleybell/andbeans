@@ -7,6 +7,8 @@ namespace andbeans.Models
 {
     public enum CacheExpiry : int
     {
+        TenSeconds = 10,
+        ThirtySeconds = 30,
         OneMinute = 60,
         TwoMinutes = 120,
         ThreeMinutes = 180,
