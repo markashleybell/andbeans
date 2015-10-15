@@ -36,7 +36,7 @@ namespace andbeans.Controllers
             client.Authenticator = new HttpBasicAuthenticator("", _bingApiKey);
 
             var req = new RestRequest("Bing/Search/v1/Image");
-            req.AddParameter("ImageFilters", "'Size:Large'");
+            req.AddParameter("ImageFilters", "'Size:Large+Aspect:Tall'");
             req.AddParameter("Query", "'" + query.Trim() + "'");
 
             return client.Execute<BingSearchResultContainer>(req);
