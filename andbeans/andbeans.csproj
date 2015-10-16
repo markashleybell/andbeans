@@ -124,6 +124,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -131,7 +132,6 @@
     <Compile Include="Models\Bing\BingSearchResultContainer.cs" />
     <Compile Include="Models\Bing\BingSearchResult.cs" />
     <Compile Include="Models\Bing\BingSearchResultList.cs" />
-    <Compile Include="Models\CacheExpiry.cs" />
     <Compile Include="Models\CacheItemInfo.cs" />
     <Compile Include="Models\DataCache.cs" />
     <Compile Include="Models\IndexViewModel.cs" />

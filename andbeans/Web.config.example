@@ -10,6 +10,9 @@
     <add key="ClientValidationEnabled" value="true" />
     <add key="UnobtrusiveJavaScriptEnabled" value="true" />
     <add key="BingApiKey" value="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"/>
+    <add key="BeansCacheTimeSeconds" value="120" />
+    <add key="QueryCacheTimeSeconds" value="30" />
+    <add key="CacheViewKey" value="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" />
   </appSettings>
   <system.web>
     <compilation debug="true" targetFramework="4.5.2" />
