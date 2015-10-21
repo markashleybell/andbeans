@@ -52,8 +52,7 @@ namespace andbeans.Models
             }
             else
             {
-                _cacheInfo.TryAdd(key, new CacheItemInfo
-                {
+                _cacheInfo.TryAdd(key, new CacheItemInfo {
                     Key = key,
                     Type = value.GetType().ToString(),
                     Hits = 0,
