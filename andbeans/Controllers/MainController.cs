@@ -32,10 +32,10 @@ namespace andbeans.Controllers
             return View();
         }
 
-        private BingSearchResultContainer FetchData(string query, int expirySeconds)
+        private BingSearchResultList FetchData(string query, int expirySeconds)
         {
             var key = _cacheKeyPrefix + "-image-query-" + query;
-            var data = _cache.Get<BingSearchResultContainer>(key);
+            var data = _cache.Get<BingSearchResultList>(key);
 
             // If the query's not in the cache
             if (data == null)
@@ -50,7 +50,7 @@ namespace andbeans.Controllers
 
                 var response = client.Execute<BingSearchResultContainer>(req);
                 
-                data = response.Data;
+                data = response.Data.D;
 
                 // And add it to the cache
                 _cache.Add(key, data, expirySeconds);
@@ -62,7 +62,7 @@ namespace andbeans.Controllers
         public ActionResult GetBeans()
         {
             var data = FetchData("baked beans", _config.Get<int>("BeansCacheTimeSeconds"));
-            return Json(data.D, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
 
             // return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/beans.json")), "application/json");
         }
@@ -70,7 +70,7 @@ namespace andbeans.Controllers
         public ActionResult GetImages(string query)
         {
             var data = FetchData(query, _config.Get<int>("QueryCacheTimeSeconds"));
-            return Json(data.D, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
 
             // return Content(System.IO.File.ReadAllText(Server.MapPath("/Tmp/fish.json")), "application/json");
         }
