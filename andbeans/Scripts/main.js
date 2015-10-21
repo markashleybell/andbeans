@@ -27,8 +27,8 @@
     };
 
     _init = function () {
-        _ui.search = $('div.search');
-        _ui.beans = $('div.beans');
+        _ui.search = $('div.search > div.image-container');
+        _ui.beans = $('div.beans > div.image-container');
 
         $.when(
             _fetch('/Main/GetImages', { Query: 'fish' }),
