@@ -2,6 +2,7 @@
 
     var _rnd,
         _fetch,
+        _checkImage,
         _init,
         _ui;
 
@@ -12,6 +13,13 @@
 
     _rnd = function (min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    _checkImage = function (url, success, error) {
+        var img = new Image();
+        img.onload = success;
+        img.onerror = error;
+        img.src = url;
     };
 
     _fetch = function (url, data) {
@@ -38,10 +46,21 @@
             var beans = data2[0].Results;
 
             var searchImage = search[_rnd(0, search.length -1)];
-            var beansImage = beans[_rnd(0, beans.length -1)];
+            var beansImage = beans[_rnd(0, beans.length - 1)];
 
-            _ui.search.css('background-image', 'url(' + searchImage.MediaUrl + ')');
-            _ui.beans.css('background-image', 'url(' + beansImage.MediaUrl + ')');
+            _checkImage(searchImage.MediaUrl, function () {
+                console.log('Image Loaded: ' + searchImage.MediaUrl);
+                _ui.search.css('background-image', 'url(' + searchImage.MediaUrl + ')');
+            }, function () {
+                console.log('Image Inaccessible: ' + searchImage.MediaUrl);
+            });
+
+            _checkImage(beansImage.MediaUrl, function () {
+                console.log('Image Loaded: ' + beansImage.MediaUrl);
+                _ui.beans.css('background-image', 'url(' + beansImage.MediaUrl + ')');
+            }, function () {
+                console.log('Image Inaccessible: ' + beansImage.MediaUrl);
+            });
         });
     };
 
