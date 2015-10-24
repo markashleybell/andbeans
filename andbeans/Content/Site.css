@@ -27,3 +27,22 @@
     left: 0;
     right: 0;
 }
+
+.label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 70px;
+    width: 450px;
+    margin: -35px 0 0 -225px;
+}
+
+.label input {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 450px;
+    font-size: 60px;
+    font-weight: bold;
+    border: solid 3px #000;
+    text-align: center;
+    text-transform: uppercase;
+}
