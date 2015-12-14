@@ -37,8 +37,7 @@
     };
 
     _getRandomImage = function (data) {
-        var images = data[0].Results;
-        return images[_rnd(0, images.length - 1)];
+        return data[_rnd(0, data.length - 1)];
     };
 
     _init = function () {
@@ -54,10 +53,10 @@
 
             $.when(
                 _fetch('/Main/GetImages', { Query: $.trim($(this).find('input').val()) }),
-                _fetch('/Main/GetBeans')
+                _fetch('/Main/BeansItLikeAMother')
             ).done(function (data1, data2) {
-                var searchImage = _getRandomImage(data1);
-                var beansImage = _getRandomImage(data2);
+                var searchImage = _getRandomImage(data1[0].Results);
+                var beansImage = _getRandomImage(data2[0].Results);
 
                 _checkImage(searchImage.MediaUrl, function () {
                     _ui.search.css('background-image', 'url(' + searchImage.MediaUrl + ')');
@@ -75,7 +74,35 @@
     };
 
     return {
-        init: _init
+        init: _init,
+        reloadBeans: function () {
+            _ui.beans.css('background-image', 'none');
+            $.when(
+                _fetch('/Main/BeansItLikeAMother')
+            ).done(function (data) {
+                var newImage = _getRandomImage(data.Results);
+
+                _checkImage(newImage.MediaUrl, function () {
+                    _ui.beans.css('background-image', 'url(' + newImage.MediaUrl + ')');
+                }, function () {
+                    console.log('Image Inaccessible: ' + newImage.MediaUrl);
+                });
+            });
+        },
+        reloadSearch: function () {
+            _ui.search.css('background-image', 'none');
+            $.when(
+                _fetch('/Main/GetImages', { Query: $.trim(_ui.searchForm.find('input').val()) })
+            ).done(function (data) {
+                var newImage = _getRandomImage(data.Results);
+
+                _checkImage(newImage.MediaUrl, function () {
+                    _ui.search.css('background-image', 'url(' + newImage.MediaUrl + ')');
+                }, function () {
+                    console.log('Image Inaccessible: ' + newImage.MediaUrl);
+                });
+            });
+        }
     };
 
 }(jQuery, window));

@@ -59,7 +59,7 @@ namespace andbeans.Controllers
             return data;
         }
 
-        public ActionResult GetBeans()
+        public ActionResult BeansItLikeAMother()
         {
             var data = FetchData("baked beans", _config.Get<int>("BeansCacheTimeSeconds"));
             return Json(data, JsonRequestBehavior.AllowGet);
